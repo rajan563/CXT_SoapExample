@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:raj="http://rajantech.com">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <raj:inputSOATest>
+         <test>Hi Rajan</test>
+      </raj:inputSOATest>
+   </soapenv:Body>
+</soapenv:Envelope>

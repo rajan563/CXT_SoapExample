@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                         http://www.springframework.org/schema/beans/spring-beans.xsd                         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd                      http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd">
+    <cxf:cxfEndpoint address="http://localhost:8786/rajantech/learn"
+        endpointName="a:SOATestEndpoint" id="cXFTest"
+        serviceClass="com.rajantech.SOATestEndpoint"
+        serviceName="a:SOATestEndpointService"
+        wsdlURL="META-INF/wsdl/test.wsdl" xmlns:a="http://rajantech.com"/>
+    <cxf:cxfEndpoint address="http://localhost:8786/rajantech/learn"
+        endpointName="a:SOATestEndpoint" id="req"
+        serviceName="a:SOATestEndpointService"
+        wsdlURL="META-INF/wsdl/test.wsdl" xmlns:a="http://rajantech.com"/>
+    <bean class="com.rajantech.beans.CamelProcessor" id="processor"/>
+    <camelContext id="camelId" xmlns="http://camel.apache.org/schema/spring">
+        <route id="bookTicket">
+            <from id="_from1" uri="cxf:bean:cXFTest"/>
+            <process id="_process1" ref="processor"/>
+        </route>
+        <route id="_route1">
+            <from id="_from2" uri="timer://foo?period=10s"/>
+            <to id="_to1" uri="velocity:test.vm"/>
+            <log id="_log1" message=" before calling soap ${body}"/>
+            <setHeader headerName="SOAPAction" id="_setHeader1">
+                <constant>http://rajantech.com/InputSOATest</constant>
+            </setHeader>
+            <to id="_from1" uri="cxf:bean:req?dataFormat=MESSAGE"/>
+            <log id="_log2" message=" ####### ${body} "/>
+        </route>
+    </camelContext>
+</beans>
